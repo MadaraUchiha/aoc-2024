@@ -1,9 +1,10 @@
 mod solution;
 mod day01;
 mod day02;
+mod day03;
 
 use solution::Solution;
 
 fn main() {
-    day02::Day02.run().unwrap();
+    day03::Day03.run().unwrap();
 }
