@@ -15,6 +15,7 @@ pub trait Solution {
         let start = Instant::now();
         let part2 = Self::part2(input)?;
         println!("Part 2 solution: {}, took: {:?}", part2, start.elapsed());
+        println!();
 
         Ok(())
     }
@@ -24,6 +25,8 @@ pub trait Solution {
         let path = format!("./src/input/day{:02}.txt", day);
         let start = Instant::now();
         let input = fs::read_to_string(path)?;
+        println!("Day {:02}", day);
+        println!("====================");
         println!(
             "Reading input took: {:?}, read {} bytes",
             start.elapsed(),
