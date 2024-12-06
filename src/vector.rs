@@ -37,6 +37,10 @@ impl Vec2 {
             _ => panic!("Invalid direction"),
         }
     }
+
+    pub fn contained_in(&self, min: Self, max: Self) -> bool {
+        self.x >= min.x && self.x < max.x && self.y >= min.y && self.y < max.y
+    }
 }
 
 impl Add for Vec2 {

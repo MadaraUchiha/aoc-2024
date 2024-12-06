@@ -17,7 +17,7 @@ impl Solution for Day06 {
 
     fn part1(input: &str) -> Result<i64> {
         let mut lab = input.parse::<Lab>()?;
-        Ok(lab.run() as i64)
+        Ok(lab.run().len() as i64)
     }
 
     fn part2(input: &str) -> Result<i64> {
@@ -44,13 +44,10 @@ impl Lab {
         }
     }
 
-    fn run(&mut self) -> usize {
+    fn run(&mut self) -> HashSet<Vec2> {
         let mut visited = HashSet::new();
         loop {
-            let within_bounds = self.guard_position.x >= 0
-                && self.guard_position.x < self.size.x
-                && self.guard_position.y >= 0
-                && self.guard_position.y < self.size.y;
+            let within_bounds = self.guard_position.contained_in(Vec2::new(0, 0), self.size);
 
             if !within_bounds {
                 break;
@@ -60,16 +57,13 @@ impl Lab {
             self.take_step();
         }
 
-        visited.len()
+        visited
     }
 
     fn will_loop(&mut self) -> bool {
         let mut visited = HashSet::new();
         loop {
-            let within_bounds = self.guard_position.x >= 0
-                && self.guard_position.x < self.size.x
-                && self.guard_position.y >= 0
-                && self.guard_position.y < self.size.y;
+            let within_bounds = self.guard_position.contained_in(Vec2::new(0, 0), self.size);
 
             if !within_bounds {
                 return false;
@@ -85,8 +79,8 @@ impl Lab {
     }
 
     fn find_loop_inducing_positions_parallel(&self) -> usize {
-        let all_free_positions = self.all_free_positions();
-        all_free_positions
+        let all_relevant_positions = self.clone().run();
+        all_relevant_positions
             .par_iter()
             .map(|position| {
                 let mut cloned_lab = self.with_added_obstacle(*position);
@@ -97,15 +91,6 @@ impl Lab {
                 }
             })
             .sum()
-    }
-
-    fn all_free_positions(&self) -> Vec<Vec2> {
-        let all_possible_map_positions =
-            (0..self.size.y).flat_map(|y| (0..self.size.x).map(move |x| Vec2::new(x, y)));
-
-        all_possible_map_positions
-            .filter(|position| !self.map.contains(position))
-            .collect()
     }
 
     fn with_added_obstacle(&self, position: Vec2) -> Self {
