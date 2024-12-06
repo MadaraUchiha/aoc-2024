@@ -29,10 +29,9 @@ impl Solution for Day05 {
         let mut result = 0;
         for update in &manual.updates {
             if !manual.page_matches_rules(update) {
-                if let Some(new_ordering) = manual.find_correct_ordering(update) {
-                    let middle_page_number = ManualInstructions::update_middle_page(&new_ordering);
-                    result += middle_page_number as i64;
-                }
+                let new_ordering = manual.find_correct_ordering(update);
+                let middle_page_number = ManualInstructions::update_middle_page(&new_ordering);
+                result += middle_page_number as i64;
             }
         }
 
@@ -105,7 +104,7 @@ impl ManualInstructions {
             .filter(move |(before, after)| update.contains(before) && update.contains(after))
     }
 
-    fn find_correct_ordering(&self, update: &[u8]) -> Option<Vec<u8>> {
+    fn find_correct_ordering(&self, update: &[u8]) -> Vec<u8> {
         let mut new_update = vec![0; update.len()];
         let relevant_rules = self.rules_matching_update(update).collect_vec();
         for page in update {
@@ -116,7 +115,7 @@ impl ManualInstructions {
             new_update[new_index_for_page] = *page;
         }
 
-        Some(new_update)
+        new_update
     }
 
     fn update_middle_page(update: &[u8]) -> u8 {
