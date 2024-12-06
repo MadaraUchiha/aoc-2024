@@ -1,6 +1,7 @@
 use std::{collections::HashSet, str::FromStr};
 
 use anyhow::Result;
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
 use crate::{
     solution::Solution,
@@ -21,7 +22,7 @@ impl Solution for Day06 {
 
     fn part2(input: &str) -> Result<i64> {
         let lab = input.parse::<Lab>()?;
-        Ok(lab.find_loop_inducing_positions() as i64)
+        Ok(lab.find_loop_inducing_positions_parallel() as i64)
     }
 }
 
@@ -83,24 +84,34 @@ impl Lab {
         }
     }
 
-    fn find_loop_inducing_positions(&self) -> usize {
-        let mut count = 0;
-        for y in 0..self.size.y {
-            for x in 0..self.size.x {
-                let position = Vec2::new(x, y);
-                if self.map.contains(&position) {
-                    continue;
-                }
-
-                let mut cloned_lab = self.clone();
-                cloned_lab.map.insert(position);
+    fn find_loop_inducing_positions_parallel(&self) -> usize {
+        let all_free_positions = self.all_free_positions();
+        all_free_positions
+            .par_iter()
+            .map(|position| {
+                let mut cloned_lab = self.with_added_obstacle(*position);
                 if cloned_lab.will_loop() {
-                    count += 1;
+                    1
+                } else {
+                    0
                 }
-            }
-        }
+            })
+            .sum()
+    }
 
-        count
+    fn all_free_positions(&self) -> Vec<Vec2> {
+        let all_possible_map_positions =
+            (0..self.size.y).flat_map(|y| (0..self.size.x).map(move |x| Vec2::new(x, y)));
+
+        all_possible_map_positions
+            .filter(|position| !self.map.contains(position))
+            .collect()
+    }
+
+    fn with_added_obstacle(&self, position: Vec2) -> Self {
+        let mut cloned = self.clone();
+        cloned.map.insert(position);
+        cloned
     }
 }
 
