@@ -4,6 +4,7 @@ mod day03;
 mod day04;
 mod day05;
 mod day06;
+mod day07;
 
 mod solution;
 mod vector;
@@ -11,5 +12,5 @@ mod vector;
 use solution::Solution;
 
 fn main() {
-    day06::Day06.run().unwrap();
+    day07::Day07.run().unwrap();
 }
