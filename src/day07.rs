@@ -61,6 +61,12 @@ impl Equation {
                     }
                 }
                 [a, b, rest @ ..] => {
+                    if equation.result < *a {
+                        // a is already too large
+                        // no further operations will bring us to the result
+                        continue;
+                    }
+
                     let sum = a + b;
                     let product = a * b;
 
@@ -93,6 +99,11 @@ impl Equation {
                     }
                 }
                 [a, b, rest @ ..] => {
+                    if equation.result < *a {
+                        // a is already too large
+                        // no further operations will bring us to the result
+                        continue;
+                    }
                     let sum = a + b;
                     let product = a * b;
 
