@@ -45,6 +45,7 @@ impl Disk {
     fn compact_full_files(&mut self) {
         let mut end_ptr = self.data.len() - 1;
         let mut current_file = &self.data[end_ptr];
+        let mut latest_handled_file = *current_file;
         while end_ptr > 0 {
             if *current_file == -1 {
                 end_ptr -= 1;
@@ -58,6 +59,13 @@ impl Disk {
                 if end_ptr - file_length == 0 {
                     break;
                 }
+            }
+
+            // Have I moved this file already?
+            if *current_file > latest_handled_file {
+                end_ptr -= file_length;
+                current_file = &self.data[end_ptr];
+                continue;
             }
 
             // Have all the information, now find a contiguous space to move the file to
@@ -84,6 +92,7 @@ impl Disk {
                 }
 
                 // Move the cursor to the beginning of the moved space, and continue to next file
+                latest_handled_file -= 1;
                 end_ptr -= file_length;
                 current_file = &self.data[end_ptr];
                 break;
