@@ -41,6 +41,15 @@ impl Vec2 {
     pub fn contained_in(&self, min: Self, max: Self) -> bool {
         self.x >= min.x && self.x < max.x && self.y >= min.y && self.y < max.y
     }
+
+    pub fn get_surrounding_4(&self) -> [Self; 4] {
+        [
+            *self + UP,
+            *self + DOWN,
+            *self + LEFT,
+            *self + RIGHT,
+        ]
+    }
 }
 
 impl Add for Vec2 {

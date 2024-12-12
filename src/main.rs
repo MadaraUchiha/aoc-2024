@@ -2,6 +2,7 @@ mod days;
 
 mod solution;
 mod vector;
+mod vector_map;
 
 mod cli;
 
@@ -25,6 +26,7 @@ fn main() -> Result<()> {
         9 => Day09.run(),
         10 => Day10.run(),
         11 => Day11.run(),
+        12 => Day12.run(),
         n => Err(anyhow!("Day {} not implemented", n)),
     }
 }
