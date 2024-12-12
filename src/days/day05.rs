@@ -98,7 +98,7 @@ impl ManualInstructions {
     fn rules_matching_update<'a>(
         &'a self,
         update: &'a [u8],
-    ) -> impl Iterator<Item = &(u8, u8)> + 'a {
+    ) -> impl Iterator<Item = &'a (u8, u8)> + 'a {
         self.rules
             .iter()
             .filter(move |(before, after)| update.contains(before) && update.contains(after))
