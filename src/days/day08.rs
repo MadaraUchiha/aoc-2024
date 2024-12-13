@@ -109,8 +109,8 @@ impl FromStr for AntennaMap {
         let mut index = HashMap::new();
 
         let size = Vec2::new(
-            s.lines().next().unwrap().len() as i32,
-            s.lines().count() as i32,
+            s.lines().next().unwrap().len() as i64,
+            s.lines().count() as i64,
         );
 
         for (y, line) in s.lines().enumerate() {

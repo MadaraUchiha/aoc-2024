@@ -7,20 +7,20 @@ pub const RIGHT: Vec2 = Vec2 { x: 1, y: 0 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Vec2 {
-    pub x: i32,
-    pub y: i32,
+    pub x: i64,
+    pub y: i64,
 }
 
 impl Vec2 {
-    pub fn new(x: i32, y: i32) -> Self {
+    pub fn new(x: i64, y: i64) -> Self {
         Self { x, y }
     }
 
-    pub fn _manhattan_distance(&self, other: &Self) -> i32 {
+    pub fn _manhattan_distance(&self, other: &Self) -> i64 {
         (self.x - other.x).abs() + (self.y - other.y).abs()
     }
 
-    pub fn _square_distance(&self, other: &Self) -> i32 {
+    pub fn _square_distance(&self, other: &Self) -> i64 {
         (self.x - other.x).pow(2) + (self.y - other.y).pow(2)
     }
 
@@ -43,12 +43,7 @@ impl Vec2 {
     }
 
     pub fn get_surrounding_4(&self) -> [Self; 4] {
-        [
-            *self + UP,
-            *self + DOWN,
-            *self + LEFT,
-            *self + RIGHT,
-        ]
+        [*self + UP, *self + DOWN, *self + LEFT, *self + RIGHT]
     }
 }
 
@@ -76,6 +71,15 @@ impl Sub for Vec2 {
 
 impl From<(i32, i32)> for Vec2 {
     fn from((x, y): (i32, i32)) -> Self {
+        Self {
+            x: x as i64,
+            y: y as i64,
+        }
+    }
+}
+
+impl From<(i64, i64)> for Vec2 {
+    fn from((x, y): (i64, i64)) -> Self {
         Self { x, y }
     }
 }
@@ -83,8 +87,8 @@ impl From<(i32, i32)> for Vec2 {
 impl From<(usize, usize)> for Vec2 {
     fn from((x, y): (usize, usize)) -> Self {
         Self {
-            x: x as i32,
-            y: y as i32,
+            x: x as i64,
+            y: y as i64,
         }
     }
 }
