@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub};
+use std::ops::{Add, Mul, Rem, Sub};
 
 pub const UP: Vec2 = Vec2 { x: 0, y: -1 };
 pub const DOWN: Vec2 = Vec2 { x: 0, y: 1 };
@@ -65,6 +65,28 @@ impl Sub for Vec2 {
         Self {
             x: self.x - rhs.x,
             y: self.y - rhs.y,
+        }
+    }
+}
+
+impl Mul<i32> for Vec2 {
+    type Output = Self;
+
+    fn mul(self, rhs: i32) -> Self::Output {
+        Self {
+            x: self.x * rhs as i64,
+            y: self.y * rhs as i64,
+        }
+    }
+}
+
+impl Rem for Vec2 {
+    type Output = Self;
+
+    fn rem(self, rhs: Self) -> Self::Output {
+        Self {
+            x: self.x.rem_euclid(rhs.x),
+            y: self.y.rem_euclid(rhs.y),
         }
     }
 }
