@@ -38,6 +38,16 @@ impl Vec2 {
         }
     }
 
+    pub fn rotate_counter_clockwise(&self) -> Self {
+        match self {
+            &UP => LEFT,
+            &LEFT => DOWN,
+            &DOWN => RIGHT,
+            &RIGHT => UP,
+            _ => panic!("Invalid direction"),
+        }
+    }
+
     pub fn contained_in(&self, min: Self, max: Self) -> bool {
         self.x >= min.x && self.x < max.x && self.y >= min.y && self.y < max.y
     }
