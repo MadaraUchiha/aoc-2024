@@ -1,4 +1,8 @@
-use std::ops::{Add, Mul, Rem, Sub};
+use std::{
+    fmt::Display,
+    ops::{Add, Mul, Rem, Sub},
+    str::FromStr,
+};
 
 pub const UP: Vec2 = Vec2 { x: 0, y: -1 };
 pub const DOWN: Vec2 = Vec2 { x: 0, y: 1 };
@@ -122,5 +126,23 @@ impl From<(usize, usize)> for Vec2 {
             x: x as i64,
             y: y as i64,
         }
+    }
+}
+
+impl FromStr for Vec2 {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (x, y) = s.split_once(',').unwrap();
+        Ok(Self {
+            x: x.parse()?,
+            y: y.parse()?,
+        })
+    }
+}
+
+impl Display for Vec2 {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{},{}", self.x, self.y)
     }
 }
