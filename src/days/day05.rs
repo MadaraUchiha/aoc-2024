@@ -8,31 +8,31 @@ use crate::solution::Solution;
 pub struct Day05;
 
 impl Solution for Day05 {
-    type Answer = i64;
+    type Answer = u32;
     fn day(&self) -> u8 {
         5
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let manual = input.parse::<ManualInstructions>()?;
         let mut result = 0;
         for update in &manual.updates {
             if manual.page_matches_rules(update) {
                 let middle_page_number = ManualInstructions::update_middle_page(update);
-                result += middle_page_number as i64;
+                result += middle_page_number as u32;
             }
         }
         Ok(result)
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let manual = input.parse::<ManualInstructions>()?;
         let mut result = 0;
         for update in &manual.updates {
             if !manual.page_matches_rules(update) {
                 let new_ordering = manual.find_correct_ordering(update);
                 let middle_page_number = ManualInstructions::update_middle_page(&new_ordering);
-                result += middle_page_number as i64;
+                result += middle_page_number as u32;
             }
         }
 
@@ -52,24 +52,24 @@ impl FromStr for ManualInstructions {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (rule_str, updates_str) = s
             .split_once("\n\n")
-            .ok_or_else(|| anyhow!("Failed to split input string"))?;
+            .ok_or(anyhow!("Failed to split input string"))?;
 
         let rules = rule_str
             .lines()
-            .map(|line| -> Result<(u8, u8)> {
+            .map(|line| {
                 let (before, after) = line
                     .split_once("|")
                     .ok_or(anyhow!("Failed to split rule"))?;
 
                 Ok((before.parse()?, after.parse()?))
             })
-            .collect::<Result<Vec<_>, _>>()?;
+            .collect::<Result<_>>()?;
 
         let updates: Vec<Vec<u8>> = updates_str
             .lines()
             .map(|line| {
                 line.split(",")
-                    .map(|n| -> Result<u8> { Ok(n.parse::<u8>()?) })
+                    .map(|n| Ok(n.parse::<u8>()?))
                     .collect::<Result<Vec<_>>>()
             })
             .collect::<Result<_>>()?;

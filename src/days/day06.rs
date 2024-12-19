@@ -11,19 +11,19 @@ use crate::{
 pub struct Day06;
 
 impl Solution for Day06 {
-    type Answer = i64;
+    type Answer = usize;
     fn day(&self) -> u8 {
         6
     }
 
-    fn part1(input: &str) -> Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let mut lab = input.parse::<Lab>()?;
-        Ok(lab.run().len() as i64)
+        Ok(lab.run().len())
     }
 
-    fn part2(input: &str) -> Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let lab = input.parse::<Lab>()?;
-        Ok(lab.find_loop_inducing_positions_parallel() as i64)
+        Ok(lab.find_loop_inducing_positions_parallel())
     }
 }
 
@@ -83,15 +83,11 @@ impl Lab {
         let all_relevant_positions = self.clone().run();
         all_relevant_positions
             .par_iter()
-            .map(|position| {
+            .filter(|&position| {
                 let mut cloned_lab = self.with_added_obstacle(*position);
-                if cloned_lab.will_loop() {
-                    1
-                } else {
-                    0
-                }
+                cloned_lab.will_loop()
             })
-            .sum()
+            .count()
     }
 
     fn with_added_obstacle(&self, position: Vec2) -> Self {

@@ -10,20 +10,22 @@ use crate::{solution::Solution, vector::Vec2, vector_map::VectorMap};
 pub struct Day18;
 
 impl Solution for Day18 {
-    type Answer = i64;
+    type Answer = String;
     fn day(&self) -> u8 {
         18
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let maze: MemoryMaze = input.parse()?;
         let take = if cfg!(test) { 12 } else { 1024 };
         let map = maze.to_vector_map(take);
 
-        Ok(map.find_shortest_path().unwrap() as i64)
+        map.find_shortest_path()
+            .ok_or(anyhow!("No path found"))
+            .map(|steps| steps.to_string())
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let maze: MemoryMaze = input.parse()?;
         let initial_take = if cfg!(test) { 0 } else { 1024 };
         let mut map = maze.to_vector_map(initial_take);
@@ -31,8 +33,7 @@ impl Solution for Day18 {
             map.0.set(&maze.bytes[take], true);
             let steps = map.find_shortest_path();
             if let None = steps {
-                println!("First byte to block exit is {}", maze.bytes[take]);
-                return Ok(0);
+                return Ok(maze.bytes[take].to_string());
             }
         }
         Err(anyhow!("No blocking byte found"))
@@ -130,11 +131,11 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(Day18.run_test1(), 22);
+        assert_eq!(Day18.run_test1(), "22");
     }
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day18.run_test2(), 0);
+        assert_eq!(Day18.run_test2(), "6,1");
     }
 }

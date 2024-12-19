@@ -7,12 +7,12 @@ use crate::solution::Solution;
 pub struct Day04;
 
 impl Solution for Day04 {
-    type Answer = i64;
+    type Answer = usize;
     fn day(&self) -> u8 {
         4
     }
 
-    fn part1(input: &str) -> Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let board: WordSearchBoard = input.parse()?;
 
         let mut result = 0;
@@ -22,19 +22,19 @@ impl Solution for Day04 {
             result += options
                 .iter()
                 .filter(|word| word.as_str() == "XMAS")
-                .count() as i64;
+                .count();
         }
 
         Ok(result)
     }
 
-    fn part2(input: &str) -> Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let board: WordSearchBoard = input.parse()?;
 
         let all_xmas = board
             .all_letters('A')
             .filter(|(x, y)| board.is_xmas(*x as isize, *y as isize))
-            .count() as i64;
+            .count();
 
         Ok(all_xmas)
     }
@@ -93,7 +93,7 @@ impl WordSearchBoard {
             self.get(x - 3, y + 3),
         ];
 
-        let all = vec![
+        let all = [
             forwards, backwards, up, down, up_right, up_left, down_right, down_left,
         ];
         all.into_iter()

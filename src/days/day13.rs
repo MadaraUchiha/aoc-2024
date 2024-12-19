@@ -8,24 +8,24 @@ use crate::{solution::Solution, vector::Vec2};
 pub struct Day13;
 
 impl Solution for Day13 {
-    type Answer = i64;
+    type Answer = f64;
     fn day(&self) -> u8 {
         13
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> anyhow::Result<f64> {
         let machines = input
             .split("\n\n")
             .map(|s| s.parse::<ArcadeMachine>().unwrap());
 
         let prize_presses = machines.filter_map(|machine| machine.find_prize());
 
-        let total_cost = prize_presses.map(|(a, b)| a * 3.0 + b).sum::<f64>();
+        let total_cost = prize_presses.map(|(a, b)| a * 3.0 + b).sum();
 
-        Ok(total_cost as i64)
+        Ok(total_cost)
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> anyhow::Result<f64> {
         let mut machines = input
             .split("\n\n")
             .map(|s| s.parse::<ArcadeMachine>().unwrap())
@@ -37,9 +37,9 @@ impl Solution for Day13 {
 
         let prize_presses = machines.iter().filter_map(|machine| machine.find_prize());
 
-        let total_cost = prize_presses.map(|(a, b)| a * 3.0 + b).sum::<f64>();
+        let total_cost = prize_presses.map(|(a, b)| a * 3.0 + b).sum();
 
-        Ok(total_cost as i64)
+        Ok(total_cost)
     }
 }
 
@@ -114,7 +114,7 @@ mod tests {
 
     #[test]
     fn part1() {
-        assert_eq!(Day13.run_test1(), 480);
+        assert_eq!(Day13.run_test1(), 480.0);
     }
 
     #[test]

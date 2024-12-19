@@ -3,20 +3,19 @@ use std::{
     str::FromStr,
 };
 
-use crate::{
-    solution::Solution,
-    vector::{Vec2, DOWN, LEFT, RIGHT, UP},
-};
+use anyhow::Result;
+
+use crate::{solution::Solution, vector::Vec2};
 
 pub struct Day10;
 
 impl Solution for Day10 {
-    type Answer = i64;
+    type Answer = u64;
     fn day(&self) -> u8 {
         10
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let map = input.parse::<TopologicalMap>()?;
         Ok(map
             .zeros
@@ -25,7 +24,7 @@ impl Solution for Day10 {
             .sum())
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let map = input.parse::<TopologicalMap>()?;
         Ok(map
             .zeros
@@ -42,7 +41,7 @@ struct TopologicalMap {
 }
 
 impl TopologicalMap {
-    fn count_trails<const DISTINCT: bool>(&self, start: Vec2) -> i64 {
+    fn count_trails<const DISTINCT: bool>(&self, start: Vec2) -> u64 {
         let mut trails = HashSet::new();
         let mut total_trails = 0;
         let mut edge = VecDeque::from([start]);
@@ -56,7 +55,7 @@ impl TopologicalMap {
                 }
                 continue;
             }
-            let candidates = [pos + UP, pos + RIGHT, pos + DOWN, pos + LEFT];
+            let candidates = pos.get_surrounding_4();
 
             candidates
                 .iter()
@@ -67,7 +66,7 @@ impl TopologicalMap {
                 });
         }
 
-        total_trails as i64
+        total_trails
     }
 
     fn get(&self, pos: Vec2) -> u8 {

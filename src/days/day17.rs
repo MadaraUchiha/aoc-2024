@@ -1,37 +1,35 @@
 use std::{collections::HashSet, str::FromStr};
 
-use anyhow::anyhow;
+use anyhow::{anyhow, Result};
 
 use crate::solution::Solution;
 
 pub struct Day17;
 
 impl Solution for Day17 {
-    type Answer = i64;
+    type Answer = String;
     fn day(&self) -> u8 {
         17
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let mut computer = input.parse::<ThreeBitComputer>()?;
         computer.run_assmebled_program();
-        println!(
-            "{}",
-            computer
-                .output
-                .iter()
-                .map(|&b| b.to_string())
-                .collect::<Vec<String>>()
-                .join(",")
-        );
-        Ok(0)
+        let output = computer
+            .output
+            .iter()
+            .map(|&b| b.to_string())
+            .collect::<Vec<String>>()
+            .join(",");
+
+        Ok(output)
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let computer = input.parse::<ThreeBitComputer>()?;
         let min_a_reg = computer.find_minimal_a_reg();
 
-        Ok(min_a_reg as i64)
+        Ok(min_a_reg.to_string())
     }
 }
 

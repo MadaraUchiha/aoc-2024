@@ -3,6 +3,8 @@ use std::{
     str::FromStr,
 };
 
+use anyhow::Result;
+
 use crate::{
     solution::Solution,
     vector::{Vec2, RIGHT},
@@ -12,17 +14,17 @@ use crate::{
 pub struct Day16;
 
 impl Solution for Day16 {
-    type Answer = i64;
+    type Answer = u64;
     fn day(&self) -> u8 {
         16
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let maze = input.parse::<Maze>()?;
         Ok(maze.find_shortest_path()[0].cost)
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let maze = input.parse::<Maze>()?;
         let paths = maze.find_shortest_path();
         let tiles = paths
@@ -30,7 +32,7 @@ impl Solution for Day16 {
             .flat_map(|p| p.visited_tiles)
             .collect::<HashSet<_>>();
 
-        Ok(tiles.len() as i64)
+        Ok(tiles.len() as u64)
     }
 }
 
@@ -45,7 +47,7 @@ impl Maze {
     fn find_shortest_path(&self) -> Vec<Move> {
         let mut p_queue = BinaryHeap::new();
         let mut visited = HashMap::new();
-        let mut optimal_cost = i64::MAX;
+        let mut optimal_cost = u64::MAX;
         let mut paths = Vec::new();
         p_queue.push(Move {
             position: self.position,
@@ -150,7 +152,7 @@ struct Move {
     position: Vec2,
     direction: Vec2,
     visited_tiles: Vec<Vec2>,
-    cost: i64,
+    cost: u64,
 }
 
 impl PartialOrd for Move {

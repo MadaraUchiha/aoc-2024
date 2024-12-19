@@ -8,25 +8,25 @@ use crate::solution::Solution;
 pub struct Day02;
 
 impl Solution for Day02 {
-    type Answer = i64;
+    type Answer = usize;
     fn day(&self) -> u8 {
         2
     }
 
-    fn part1(input: &str) -> Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let parsed_input = Self::parse_input(input)?;
         let safe_sequences = parsed_input.iter().filter(|seq| seq.is_safe(None)).count();
-        Ok(safe_sequences as i64)
+        Ok(safe_sequences)
     }
 
-    fn part2(input: &str) -> Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let parsed_input = Self::parse_input(input)?;
         let safe_sequences = parsed_input
             .into_iter()
             .filter(|seq| seq.is_safe_with_tolerance())
             .count();
 
-        Ok(safe_sequences as i64)
+        Ok(safe_sequences)
     }
 }
 
@@ -46,7 +46,7 @@ impl FromStr for LevelSequence {
         Ok(LevelSequence(
             s.split_ascii_whitespace()
                 .map(|s| s.parse().map_err(Error::from))
-                .collect::<Result<Vec<_>>>()?,
+                .collect::<Result<_>>()?,
         ))
     }
 }

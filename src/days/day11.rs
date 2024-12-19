@@ -1,23 +1,25 @@
 use std::{collections::HashMap, str::FromStr};
 
+use anyhow::Result;
+
 use crate::solution::Solution;
 
 pub struct Day11;
 
 impl Solution for Day11 {
-    type Answer = i64;
+    type Answer = u64;
     fn day(&self) -> u8 {
         11
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let arrangement = input.parse::<StoneArrangement>()?;
         let final_stones = arrangement.blinks(25);
 
         Ok(final_stones)
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let arrangement = input.parse::<StoneArrangement>()?;
         let final_stones = arrangement.blinks(75);
 
@@ -27,11 +29,11 @@ impl Solution for Day11 {
 
 #[derive(Clone, Debug)]
 struct StoneArrangement {
-    stones: HashMap<i64, i64>,
+    stones: HashMap<u64, u64>,
 }
 
 impl StoneArrangement {
-    fn blinks(&self, n: usize) -> i64 {
+    fn blinks(&self, n: u64) -> u64 {
         let mut current_stones = self.stones.clone();
 
         for _ in 0..n {
@@ -50,15 +52,15 @@ impl StoneArrangement {
     }
 }
 
-fn stone_step(stone: &i64) -> Vec<i64> {
+fn stone_step(stone: &u64) -> Vec<u64> {
     if *stone == 0 {
         return vec![1];
     }
     let digits = stone.ilog10() + 1;
     if digits % 2 == 0 {
         let half = digits / 2;
-        let upper = stone / 10_i64.pow(half);
-        let lower = stone % 10_i64.pow(half);
+        let upper = stone / 10_u64.pow(half);
+        let lower = stone % 10_u64.pow(half);
         return vec![upper, lower];
     }
 
@@ -72,7 +74,7 @@ impl FromStr for StoneArrangement {
         let stones = s
             .split_whitespace()
             .map(|s| s.parse().map(|i| (i, 1)))
-            .collect::<Result<HashMap<_, _>, _>>()?;
+            .collect::<Result<_, _>>()?;
         Ok(Self { stones })
     }
 }

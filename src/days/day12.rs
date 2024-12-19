@@ -3,6 +3,8 @@ use std::{
     str::FromStr,
 };
 
+use anyhow::Result;
+
 use crate::{
     solution::Solution,
     vector::{Vec2, DOWN, LEFT, RIGHT, UP},
@@ -12,25 +14,25 @@ use crate::{
 pub struct Day12;
 
 impl Solution for Day12 {
-    type Answer = i64;
+    type Answer = usize;
     fn day(&self) -> u8 {
         12
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let garden = input.parse::<Garden>()?;
         let regions = garden.find_all_regions();
 
-        Ok(regions.iter().map(|region| region.price() as i64).sum())
+        Ok(regions.iter().map(|region| region.price()).sum())
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let garden = input.parse::<Garden>()?;
         let regions = garden.find_all_regions();
 
         let result = regions
             .iter()
-            .map(|region| (region.area() as i64) * (garden.count_corners(region) as i64))
+            .map(|region| region.area() * garden.count_corners(region))
             .sum();
         Ok(result)
     }

@@ -7,7 +7,7 @@ use std::{
 use anyhow::Result;
 
 pub trait Solution {
-    type Answer: Debug + Display + Copy + PartialEq;
+    type Answer: Debug + Display + Clone + PartialEq;
     fn day(&self) -> u8;
     fn part1(input: &str) -> Result<Self::Answer>;
     fn part2(input: &str) -> Result<Self::Answer>;

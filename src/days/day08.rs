@@ -3,6 +3,7 @@ use std::{
     str::FromStr,
 };
 
+use anyhow::Result;
 use itertools::Itertools;
 
 use crate::{solution::Solution, vector::Vec2};
@@ -10,35 +11,35 @@ use crate::{solution::Solution, vector::Vec2};
 pub struct Day08;
 
 impl Solution for Day08 {
-    type Answer = i64;
+    type Answer = usize;
     fn day(&self) -> u8 {
         8
     }
 
-    fn part1(input: &str) -> anyhow::Result<i64> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let antenna_map = input.parse::<AntennaMap>()?;
         let total_antinodes = antenna_map
             .antenna_index
             .keys()
-            .map(|c| antenna_map.get_antinodes(*c))
+            .map(|c| antenna_map.get_antinodes(c))
             .reduce(|a, b| a.union(&b).copied().collect())
             .unwrap()
             .len();
 
-        Ok(total_antinodes as i64)
+        Ok(total_antinodes)
     }
 
-    fn part2(input: &str) -> anyhow::Result<i64> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let antenna_map = input.parse::<AntennaMap>()?;
         let total_antinodes = antenna_map
             .antenna_index
             .keys()
-            .map(|c| antenna_map.get_antinodes_projections(*c))
+            .map(|c| antenna_map.get_antinodes_projections(c))
             .reduce(|a, b| a.union(&b).copied().collect())
             .unwrap()
             .len();
 
-        Ok(total_antinodes as i64)
+        Ok(total_antinodes)
     }
 }
 
@@ -48,7 +49,7 @@ struct AntennaMap {
 }
 
 impl AntennaMap {
-    fn get_antinodes(&self, c: char) -> HashSet<Vec2> {
+    fn get_antinodes(&self, c: &char) -> HashSet<Vec2> {
         let mut result = HashSet::new();
         let pairs = self
             .antenna_index
@@ -73,7 +74,7 @@ impl AntennaMap {
         result
     }
 
-    fn get_antinodes_projections(&self, c: char) -> HashSet<Vec2> {
+    fn get_antinodes_projections(&self, c: &char) -> HashSet<Vec2> {
         let mut result = HashSet::new();
         let pairs = self
             .antenna_index
@@ -156,7 +157,7 @@ mod tests {
             size: Vec2::new(10, 10),
         };
 
-        let antinodes = antenna_map.get_antinodes('A');
+        let antinodes = antenna_map.get_antinodes(&'A');
         assert_eq!(antinodes.len(), 2);
         assert!(antinodes.contains(&Vec2::new(0, 3)));
         assert!(antinodes.contains(&Vec2::new(9, 0)));
