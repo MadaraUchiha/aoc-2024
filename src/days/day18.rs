@@ -10,6 +10,7 @@ use crate::{solution::Solution, vector::Vec2, vector_map::VectorMap};
 pub struct Day18;
 
 impl Solution for Day18 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         18
     }

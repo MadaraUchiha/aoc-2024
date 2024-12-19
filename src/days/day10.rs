@@ -11,6 +11,7 @@ use crate::{
 pub struct Day10;
 
 impl Solution for Day10 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         10
     }

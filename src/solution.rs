@@ -1,11 +1,16 @@
-use std::{fs, time::Instant};
+use std::{
+    fmt::{Debug, Display},
+    fs,
+    time::Instant,
+};
 
 use anyhow::Result;
 
 pub trait Solution {
+    type Answer: Debug + Display + Copy + PartialEq;
     fn day(&self) -> u8;
-    fn part1(input: &str) -> Result<i64>;
-    fn part2(input: &str) -> Result<i64>;
+    fn part1(input: &str) -> Result<Self::Answer>;
+    fn part2(input: &str) -> Result<Self::Answer>;
 
     fn solve(input: &str) -> Result<()> {
         let start = Instant::now();
@@ -36,7 +41,7 @@ pub trait Solution {
     }
 
     #[cfg(test)]
-    fn run_test1(&self) -> i64 {
+    fn run_test1(&self) -> Self::Answer {
         let day = self.day();
         let path = format!("./src/input/sample{:02}.txt", day);
         let input = fs::read_to_string(path).unwrap();
@@ -44,7 +49,7 @@ pub trait Solution {
     }
 
     #[cfg(test)]
-    fn run_test2(&self) -> i64 {
+    fn run_test2(&self) -> Self::Answer {
         let day = self.day();
         let path = format!("./src/input/sample{:02}.txt", day);
         let input = fs::read_to_string(path).unwrap();

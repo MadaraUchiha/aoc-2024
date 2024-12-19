@@ -5,6 +5,7 @@ use crate::solution::Solution;
 pub struct Day11;
 
 impl Solution for Day11 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         11
     }

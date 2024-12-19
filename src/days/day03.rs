@@ -9,6 +9,7 @@ const MUL_PATTERN: &str = r"mul\((\d{1,3}),(\d{1,3})\)";
 const FULL_PATTERN: &str = r"mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)";
 
 impl Solution for Day03 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         3
     }

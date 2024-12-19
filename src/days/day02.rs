@@ -8,6 +8,7 @@ use crate::solution::Solution;
 pub struct Day02;
 
 impl Solution for Day02 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         2
     }

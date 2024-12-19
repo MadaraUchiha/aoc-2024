@@ -7,6 +7,7 @@ use crate::{solution::Solution, vector::Vec2};
 pub struct Day14;
 
 impl Solution for Day14 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         14
     }

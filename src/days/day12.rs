@@ -12,6 +12,7 @@ use crate::{
 pub struct Day12;
 
 impl Solution for Day12 {
+    type Answer = i64;
     fn day(&self) -> u8 {
         12
     }
@@ -27,7 +28,8 @@ impl Solution for Day12 {
         let garden = input.parse::<Garden>()?;
         let regions = garden.find_all_regions();
 
-        let result = regions.iter()
+        let result = regions
+            .iter()
             .map(|region| (region.area() as i64) * (garden.count_corners(region) as i64))
             .sum();
         Ok(result)
@@ -111,7 +113,8 @@ impl Garden {
         ];
 
         for pos in &region.1 {
-            for (up_left_pos, up_right_pos, down_left_pos, down_right_pos) in &corners_around(&pos) {
+            for (up_left_pos, up_right_pos, down_left_pos, down_right_pos) in &corners_around(&pos)
+            {
                 let pattern = (
                     self.map
                         .get(up_left_pos)
@@ -143,7 +146,6 @@ impl Garden {
 
         corners + triple_corners / 3
     }
-
 }
 
 impl FromStr for Garden {
@@ -179,7 +181,6 @@ impl Region {
     fn price(&self) -> usize {
         self.area() * self.perimeter()
     }
-
 }
 
 #[cfg(test)]
