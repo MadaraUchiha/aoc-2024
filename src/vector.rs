@@ -16,12 +16,14 @@ pub struct Vec2 {
 }
 
 impl Vec2 {
+    const ZERO: Self = Vec2 { x: 0, y: 0 };
+
     pub fn new(x: i64, y: i64) -> Self {
         Self { x, y }
     }
 
-    pub fn _manhattan_distance(&self, other: &Self) -> i64 {
-        (self.x - other.x).abs() + (self.y - other.y).abs()
+    pub fn manhattan_distance(&self, other: &Self) -> u64 {
+        self.x.abs_diff(other.x) + self.y.abs_diff(other.y)
     }
 
     pub fn _square_distance(&self, other: &Self) -> i64 {
@@ -144,5 +146,11 @@ impl FromStr for Vec2 {
 impl Display for Vec2 {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{},{}", self.x, self.y)
+    }
+}
+
+impl Default for Vec2 {
+    fn default() -> Self {
+        Self::ZERO
     }
 }
