@@ -1,7 +1,7 @@
 use std::{
     collections::{HashSet, VecDeque},
     str::FromStr,
-    usize,
+    u64,
 };
 
 use anyhow::{anyhow, Result};
@@ -12,18 +12,18 @@ use crate::{solution::Solution, vector::Vec2, vector_map::VectorMap};
 pub struct Day20;
 
 impl Solution for Day20 {
-    type Answer = usize;
+    type Answer = u64;
     fn day(&self) -> u8 {
         20
     }
 
-    fn part1(input: &str) -> Result<usize> {
+    fn part1(input: &str) -> Result<Self::Answer> {
         let track = input.parse::<Track>()?;
         let threshold = if cfg!(test) { 10 } else { 100 };
         Ok(track.count_cheats_above_threshold(threshold, 2))
     }
 
-    fn part2(input: &str) -> Result<usize> {
+    fn part2(input: &str) -> Result<Self::Answer> {
         let track = input.parse::<Track>()?;
         let threshold = if cfg!(test) { 50 } else { 100 };
         Ok(track.count_cheats_above_threshold(threshold, 20))
@@ -36,8 +36,8 @@ struct Track {
 }
 
 impl Track {
-    fn calculate_costs_map(&self) -> VectorMap<usize> {
-        let mut costs = VectorMap::new(self.map.size(), usize::MAX);
+    fn calculate_costs_map(&self) -> VectorMap<u64> {
+        let mut costs = VectorMap::new(self.map.size(), u64::MAX);
         let mut visited = HashSet::new();
         let mut current_cost = 0;
         costs.set(&self.start, 0);
@@ -63,38 +63,32 @@ impl Track {
         costs
     }
 
-    fn count_cheats_above_threshold(&self, threshold: usize, max_distance: u64) -> usize {
+    fn count_cheats_above_threshold(&self, threshold: u64, max_distance: u64) -> u64 {
         let costs = self.calculate_costs_map();
         let candidates: Vec<_> = costs
             .iter()
-            .filter_map(|(pos, &cost)| if cost != usize::MAX { Some(pos) } else { None })
+            .filter_map(|(pos, &cost)| if cost != u64::MAX { Some(pos) } else { None })
             .collect();
 
         candidates
             .par_iter()
             .map(|&start| {
-                Self::find_cheats(&costs, start, max_distance, threshold)
+                Self::find_cheats(&costs, start, max_distance)
                     .into_iter()
                     .filter(|&value| value >= threshold)
-                    .count()
+                    .count() as u64
             })
             .sum()
     }
 
-    fn find_cheats(
-        costs: &VectorMap<usize>,
-        start: Vec2,
-        max_distance: u64,
-        threshold: usize,
-    ) -> Vec<usize> {
+    fn find_cheats(costs: &VectorMap<u64>, start: Vec2, max_distance: u64) -> Vec<u64> {
         let start_cost = *costs.get(&start).unwrap();
         costs
             .iter()
             .filter(|(end, _)| start.manhattan_distance(end) <= max_distance)
-            .filter(|(_, &cost)| cost != usize::MAX)
+            .filter(|(_, &cost)| cost != u64::MAX)
             .filter(|(_, &end_cost)| end_cost > start_cost)
-            .map(|(end, &cost)| cost.abs_diff(start_cost) - start.manhattan_distance(&end) as usize)
-            .filter(|value| *value >= threshold)
+            .map(|(end, &cost)| cost.abs_diff(start_cost) - start.manhattan_distance(&end))
             .collect()
     }
 }
@@ -113,7 +107,7 @@ impl FromStr for Track {
             for (x, c) in line.chars().enumerate() {
                 let pos = (x, y).into();
                 match c {
-                    '.' => {
+                    '.' | 'E' => {
                         map.set(&pos, true);
                     }
                     '#' => {
@@ -121,9 +115,6 @@ impl FromStr for Track {
                     }
                     'S' => {
                         start = Some(pos);
-                        map.set(&pos, true);
-                    }
-                    'E' => {
                         map.set(&pos, true);
                     }
                     _ => return Err(anyhow!("Invalid character: {} in position {}", c, pos)),
@@ -194,12 +185,9 @@ mod tests {
 ###############"#;
         let track = input.parse::<Track>().unwrap();
         let costs = track.calculate_costs_map();
-        assert_eq!(Track::find_cheats(&costs, (1, 3).into(), 2, 1), vec![4]);
-        assert_eq!(Track::find_cheats(&costs, (7, 1).into(), 2, 1), vec![12]);
-        assert_eq!(
-            Track::find_cheats(&costs, (9, 7).into(), 2, 1),
-            vec![20, 36]
-        );
-        assert_eq!(Track::find_cheats(&costs, (8, 7).into(), 2, 1), vec![38]);
+        assert_eq!(Track::find_cheats(&costs, (1, 3).into(), 2), vec![4]);
+        assert_eq!(Track::find_cheats(&costs, (7, 1).into(), 2), vec![12]);
+        assert_eq!(Track::find_cheats(&costs, (9, 7).into(), 2), vec![20, 36]);
+        assert_eq!(Track::find_cheats(&costs, (8, 7).into(), 2), vec![38]);
     }
 }
