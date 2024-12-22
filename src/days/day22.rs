@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use anyhow::{anyhow, Result};
 use itertools::Itertools;
@@ -53,47 +53,39 @@ impl Solution for Day22 {
             })
             .collect::<Vec<_>>();
 
-        let all_possible_difference_windows = all_differences
-            .iter()
-            .flat_map(|d| {
-                d.iter()
+        let differences_index = all_differences
+            .par_iter()
+            .enumerate()
+            .map(|(n_index, diff)| {
+                diff.iter()
                     .tuple_windows()
-                    .map(|(&a, &b, &c, &d)| (a, b, c, d))
-                    .collect::<Vec<_>>()
+                    .enumerate()
+                    .map(|(position, (&a, &b, &c, &d))| {
+                        let digits_position = position + 4;
+                        ((a, b, c, d), all_first_digits[n_index][digits_position])
+                    })
+                    .collect::<HashMap<_, _>>()
             })
+            .collect::<Vec<_>>();
+
+        let all_possible_difference_windows = differences_index
+            .iter()
+            .flat_map(|index| index.keys())
             .collect::<HashSet<_>>();
 
         let highest_bananas = all_possible_difference_windows
             .par_iter()
             .map(|diff_pattern| {
-                all_differences
-                    .par_iter()
-                    .enumerate()
-                    .filter_map(|(n_index, differences)| {
-                        let occurrence = find_first_occurrence(differences, diff_pattern)?;
-                        let digits_position = occurrence + 4;
-                        Some(all_first_digits[n_index][digits_position] as u64)
-                    })
-                    .sum::<u64>()
+                differences_index
+                    .iter()
+                    .filter_map(|index| index.get(diff_pattern))
+                    .map(|&n| n as u64)
+                    .sum()
             })
             .max();
 
         highest_bananas.ok_or_else(|| anyhow!("No solution found"))
     }
-}
-
-fn find_first_occurrence(diffs: &Vec<i32>, pattern: &(i32, i32, i32, i32)) -> Option<usize> {
-    diffs
-        .iter()
-        .tuple_windows()
-        .enumerate()
-        .find_map(|(index, (&a, &b, &c, &d))| {
-            if &(a, b, c, d) == pattern {
-                Some(index)
-            } else {
-                None
-            }
-        })
 }
 
 struct PRNG {
