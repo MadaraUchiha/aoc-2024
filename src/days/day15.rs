@@ -7,7 +7,7 @@ use anyhow::anyhow;
 
 use crate::{
     solution::Solution,
-    vector::{Vec2, RIGHT},
+    vector::{Vec2, DOWN, LEFT, RIGHT, UP},
     vector_map::VectorMap,
 };
 
@@ -28,10 +28,8 @@ impl Solution for Day15 {
     fn part2(input: &str) -> anyhow::Result<i64> {
         let mut warehouse = input.parse::<Warehouse>()?;
         warehouse = warehouse.widen();
-        println!("{}", warehouse);
-        // warehouse.run_instructions();
-        // Ok(warehouse.gps_score())
-        Ok(0)
+        warehouse.run_instructions_wide();
+        Ok(warehouse.gps_score())
     }
 }
 
@@ -67,7 +65,95 @@ impl Warehouse {
             Some('#') => {}
             _ => panic!("Invalid position"),
         }
-        // println!("\n{}", self);
+    }
+
+    fn move_robot_wide(&mut self, direction: Vec2) {
+        let new_position = self.robot_position + direction;
+        match self.map.get(&new_position) {
+            Some('.') => {
+                self.robot_position = new_position;
+            }
+            Some(&side @ '[') | Some(&side @ ']') => {
+                let mut boxes = vec![new_position];
+                let other_side_pos = match side {
+                    '[' => new_position + RIGHT,
+                    ']' => new_position + LEFT,
+                    _ => unreachable!("Invalid side"),
+                };
+                boxes.push(other_side_pos);
+
+                let mut blocked = false;
+
+                match direction {
+                    RIGHT | LEFT => {
+                        let mut path = new_position + (direction * 2);
+                        while let Some(&tile) = self.map.get(&path) {
+                            match tile {
+                                '#' => {
+                                    blocked = true;
+                                    break;
+                                }
+                                '[' | ']' => {
+                                    boxes.push(path);
+                                    path = path + direction;
+                                }
+                                _ => break,
+                            }
+                        }
+                    }
+                    UP | DOWN => {
+                        let mut current = boxes.clone();
+
+                        while current.len() > 1 {
+                            let mut next = Vec::new();
+
+                            for b in current {
+                                let path = b + direction;
+
+                                match self.map.get(&path) {
+                                    Some('#') => {
+                                        blocked = true;
+                                        next.clear();
+                                        break;
+                                    }
+                                    Some(&side @ '[' | &side @ ']') => {
+                                        if !next.contains(&path) {
+                                            boxes.push(path);
+                                            next.push(path);
+
+                                            if side == '[' {
+                                                let other_side_pos = path + RIGHT;
+                                                boxes.push(other_side_pos);
+                                                next.push(other_side_pos);
+                                            } else {
+                                                let other_side_pos = path + LEFT;
+                                                boxes.push(other_side_pos);
+                                                next.push(other_side_pos);
+                                            }
+                                        }
+                                    }
+                                    _ => {}
+                                }
+                            }
+                            current = next;
+                        }
+                    }
+                    _ => unreachable!("Invalid direction"),
+                }
+
+                if !blocked {
+                    for &b in boxes.iter().rev() {
+                        let next = b + direction;
+                        let current_value = self.map.get(&b).unwrap();
+                        self.map.set(&next, *current_value);
+                        self.map.set(&b, '.');
+                    }
+                    self.robot_position = new_position;
+                }
+            }
+            Some('#') => {}
+            _ => panic!("Invalid position"),
+        }
     }
 
     fn run_instructions(&mut self) {
@@ -77,12 +163,19 @@ impl Warehouse {
         }
     }
 
+    fn run_instructions_wide(&mut self) {
+        let instructions = self.instructions.clone();
+        for &direction in &instructions {
+            self.move_robot_wide(direction);
+        }
+    }
+
     fn gps_score(&self) -> i64 {
         self.map
             .iter()
-            .filter(|(_, &c)| c == 'O')
+            .filter(|(_, &c)| c == 'O' || c == '[')
             .map(|(pos, _)| pos.x + pos.y * 100)
-            .sum::<i64>()
+            .sum()
     }
 
     fn widen(&self) -> Self {
@@ -170,7 +263,7 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(Day15.run_test2(), 0);
+        assert_eq!(Day15.run_test2(), 9021);
     }
 
     #[test]
