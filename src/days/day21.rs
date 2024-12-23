@@ -166,9 +166,4 @@ mod tests {
     fn test_part1() {
         assert_eq!(Day21.run_test1(), 126384)
     }
-
-    #[test]
-    fn test_part2() {
-        assert_eq!(Day21.run_test2(), 0)
-    }
 }

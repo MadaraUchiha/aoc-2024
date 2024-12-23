@@ -39,7 +39,7 @@
                     "kind": "bin"
                 }
             },
-            "args": ["days::day15::tests::test_part2", "--nocapture"],
+            "args": [],
             "cwd": "${workspaceFolder}"
         }
     ]

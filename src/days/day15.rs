@@ -277,6 +277,6 @@ mod tests {
         let mut warehouse = input.parse::<Warehouse>().unwrap();
         warehouse.run_instructions();
         println!("{}", warehouse);
-        assert_eq!(warehouse.gps_score(), 24);
+        assert_eq!(warehouse.gps_score(), 2028);
     }
 }

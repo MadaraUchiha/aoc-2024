@@ -89,6 +89,7 @@ impl Track {
             .filter(|(_, &cost)| cost != u64::MAX)
             .filter(|(_, &end_cost)| end_cost > start_cost)
             .map(|(end, &cost)| cost.abs_diff(start_cost) - start.manhattan_distance(&end))
+            .filter(|&value| value > 0)
             .collect()
     }
 }

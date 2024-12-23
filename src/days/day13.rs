@@ -127,6 +127,5 @@ Prize: X=8400, Y=5400";
         let (x, y) = machine.find_prize().unwrap();
         assert_eq!(x, 80.0);
         assert_eq!(y, 40.0);
-        assert_eq!(0.1 + 0.2, 0.3);
     }
 }

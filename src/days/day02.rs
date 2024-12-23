@@ -83,7 +83,7 @@ impl LevelSequence {
                 }
             }
             let abs_diff = a.abs_diff(*b);
-            if (1..3).contains(&abs_diff) {
+            if !(1..=3).contains(&abs_diff) {
                 return false;
             }
         }
