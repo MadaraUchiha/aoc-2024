@@ -5,11 +5,7 @@ use std::{
 
 use anyhow::Result;
 
-use crate::{
-    solution::Solution,
-    vector::{Vec2, DOWN, LEFT, RIGHT, UP},
-    vector_map::VectorMap,
-};
+use crate::{solution::Solution, vector::Vec2, vector_map::VectorMap};
 
 pub struct Day12;
 
@@ -91,10 +87,30 @@ impl Garden {
 
         let corners_around = |&pos: &Vec2| {
             [
-                (pos + UP + LEFT, pos + UP, pos + LEFT, pos),
-                (pos + UP, pos + UP + RIGHT, pos, pos + RIGHT),
-                (pos + LEFT, pos, pos + DOWN + LEFT, pos + DOWN),
-                (pos, pos + RIGHT, pos + DOWN, pos + DOWN + RIGHT),
+                (
+                    pos + Vec2::UP + Vec2::LEFT,
+                    pos + Vec2::UP,
+                    pos + Vec2::LEFT,
+                    pos,
+                ),
+                (
+                    pos + Vec2::UP,
+                    pos + Vec2::UP + Vec2::RIGHT,
+                    pos,
+                    pos + Vec2::RIGHT,
+                ),
+                (
+                    pos + Vec2::LEFT,
+                    pos,
+                    pos + Vec2::DOWN + Vec2::LEFT,
+                    pos + Vec2::DOWN,
+                ),
+                (
+                    pos,
+                    pos + Vec2::RIGHT,
+                    pos + Vec2::DOWN,
+                    pos + Vec2::DOWN + Vec2::RIGHT,
+                ),
             ]
         };
 

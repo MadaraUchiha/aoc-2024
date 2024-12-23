@@ -4,11 +4,6 @@ use std::{
     str::FromStr,
 };
 
-pub const UP: Vec2 = Vec2 { x: 0, y: -1 };
-pub const DOWN: Vec2 = Vec2 { x: 0, y: 1 };
-pub const LEFT: Vec2 = Vec2 { x: -1, y: 0 };
-pub const RIGHT: Vec2 = Vec2 { x: 1, y: 0 };
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Vec2 {
     pub x: i64,
@@ -17,6 +12,16 @@ pub struct Vec2 {
 
 impl Vec2 {
     const ZERO: Self = Vec2 { x: 0, y: 0 };
+
+    pub const UP: Self = Vec2 { x: 0, y: -1 };
+    pub const DOWN: Self = Vec2 { x: 0, y: 1 };
+    pub const LEFT: Self = Vec2 { x: -1, y: 0 };
+    pub const RIGHT: Self = Vec2 { x: 1, y: 0 };
+
+    pub const NORTH: Self = Self::UP;
+    pub const SOUTH: Self = Self::DOWN;
+    pub const WEST: Self = Self::LEFT;
+    pub const EAST: Self = Self::RIGHT;
 
     pub fn new(x: i64, y: i64) -> Self {
         Self { x, y }
@@ -36,20 +41,20 @@ impl Vec2 {
 
     pub fn rotate_clockwise(&self) -> Self {
         match self {
-            &UP => RIGHT,
-            &RIGHT => DOWN,
-            &DOWN => LEFT,
-            &LEFT => UP,
+            &Self::UP => Self::RIGHT,
+            &Self::RIGHT => Self::DOWN,
+            &Self::DOWN => Self::LEFT,
+            &Self::LEFT => Self::UP,
             _ => panic!("Invalid direction"),
         }
     }
 
     pub fn rotate_counter_clockwise(&self) -> Self {
         match self {
-            &UP => LEFT,
-            &LEFT => DOWN,
-            &DOWN => RIGHT,
-            &RIGHT => UP,
+            &Self::UP => Self::LEFT,
+            &Self::LEFT => Self::DOWN,
+            &Self::DOWN => Self::RIGHT,
+            &Self::RIGHT => Self::UP,
             _ => panic!("Invalid direction"),
         }
     }
@@ -59,7 +64,12 @@ impl Vec2 {
     }
 
     pub fn get_surrounding_4(&self) -> [Self; 4] {
-        [*self + UP, *self + DOWN, *self + LEFT, *self + RIGHT]
+        [
+            *self + Self::UP,
+            *self + Self::DOWN,
+            *self + Self::LEFT,
+            *self + Self::RIGHT,
+        ]
     }
 }
 

@@ -5,11 +5,7 @@ use std::{
 
 use anyhow::anyhow;
 
-use crate::{
-    solution::Solution,
-    vector::{Vec2, DOWN, LEFT, RIGHT, UP},
-    vector_map::VectorMap,
-};
+use crate::{solution::Solution, vector::Vec2, vector_map::VectorMap};
 
 pub struct Day15;
 
@@ -76,8 +72,8 @@ impl Warehouse {
             Some(&side @ '[') | Some(&side @ ']') => {
                 let mut boxes = vec![new_position];
                 let other_side_pos = match side {
-                    '[' => new_position + RIGHT,
-                    ']' => new_position + LEFT,
+                    '[' => new_position + Vec2::RIGHT,
+                    ']' => new_position + Vec2::LEFT,
                     _ => unreachable!("Invalid side"),
                 };
                 boxes.push(other_side_pos);
@@ -85,7 +81,7 @@ impl Warehouse {
                 let mut blocked = false;
 
                 match direction {
-                    RIGHT | LEFT => {
+                    Vec2::RIGHT | Vec2::LEFT => {
                         let mut path = new_position + (direction * 2);
                         while let Some(&tile) = self.map.get(&path) {
                             match tile {
@@ -101,7 +97,7 @@ impl Warehouse {
                             }
                         }
                     }
-                    UP | DOWN => {
+                    Vec2::UP | Vec2::DOWN => {
                         let mut current = boxes.clone();
 
                         while current.len() > 1 {
@@ -122,11 +118,11 @@ impl Warehouse {
                                             next.push(path);
 
                                             if side == '[' {
-                                                let other_side_pos = path + RIGHT;
+                                                let other_side_pos = path + Vec2::RIGHT;
                                                 boxes.push(other_side_pos);
                                                 next.push(other_side_pos);
                                             } else {
-                                                let other_side_pos = path + LEFT;
+                                                let other_side_pos = path + Vec2::LEFT;
                                                 boxes.push(other_side_pos);
                                                 next.push(other_side_pos);
                                             }
@@ -189,15 +185,15 @@ impl Warehouse {
             match c {
                 '.' => {
                     new_map.set(&t_pos, '.');
-                    new_map.set(&(t_pos + RIGHT), '.');
+                    new_map.set(&(t_pos + Vec2::RIGHT), '.');
                 }
                 'O' => {
                     new_map.set(&t_pos, '[');
-                    new_map.set(&(t_pos + RIGHT), ']');
+                    new_map.set(&(t_pos + Vec2::RIGHT), ']');
                 }
                 '#' => {
                     new_map.set(&t_pos, '#');
-                    new_map.set(&(t_pos + RIGHT), '#');
+                    new_map.set(&(t_pos + Vec2::RIGHT), '#');
                 }
                 _ => {}
             }

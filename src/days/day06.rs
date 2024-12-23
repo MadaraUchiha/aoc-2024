@@ -3,10 +3,7 @@ use std::{collections::HashSet, str::FromStr};
 use anyhow::Result;
 use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 
-use crate::{
-    solution::Solution,
-    vector::{Vec2, UP},
-};
+use crate::{solution::Solution, vector::Vec2};
 
 pub struct Day06;
 
@@ -125,7 +122,7 @@ impl FromStr for Lab {
         Ok(Lab {
             map,
             guard_position,
-            guard_direction: UP,
+            guard_direction: Vec2::UP,
             size,
         })
     }

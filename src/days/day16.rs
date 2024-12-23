@@ -5,11 +5,7 @@ use std::{
 
 use anyhow::Result;
 
-use crate::{
-    solution::Solution,
-    vector::{Vec2, RIGHT},
-    vector_map::VectorMap,
-};
+use crate::{solution::Solution, vector::Vec2, vector_map::VectorMap};
 
 pub struct Day16;
 
@@ -142,7 +138,7 @@ impl FromStr for Maze {
             map,
             target: target.unwrap(),
             position: position.unwrap(),
-            direction: RIGHT,
+            direction: Vec2::RIGHT,
         })
     }
 }
