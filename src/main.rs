@@ -38,6 +38,7 @@ fn main() -> Result<()> {
         21 => Day21.run(),
         22 => Day22.run(),
         23 => Day23.run(),
+        24 => Day24.run(),
         n => Err(anyhow!("Day {} not implemented", n)),
     }
 }
