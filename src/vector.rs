@@ -18,11 +18,6 @@ impl Vec2 {
     pub const LEFT: Self = Vec2 { x: -1, y: 0 };
     pub const RIGHT: Self = Vec2 { x: 1, y: 0 };
 
-    pub const NORTH: Self = Self::UP;
-    pub const SOUTH: Self = Self::DOWN;
-    pub const WEST: Self = Self::LEFT;
-    pub const EAST: Self = Self::RIGHT;
-
     pub fn new(x: i64, y: i64) -> Self {
         Self { x, y }
     }
